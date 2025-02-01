@@ -1,13 +1,35 @@
-import sysconfig from './config.toml';
+import CONFIG from './config.toml';
+
+console.log(`CWD: ${process.cwd()}`);
+
+function verifyModelConfig(config) {
+  console.log('Verifying model config');
+
+  if (!config.name) {
+    throw new Error('Model name is missing');
+  }
+  if (!config.base_url) {
+    throw new Error('Model base URL is missing');
+  }
+  if (!config.token_name) {
+    throw new Error('Model API token name is missing');
+  }
+
+  console.log('>> name', config.name);
+  console.log('>> base_url', config.base_url);
+  console.log('>> token_name', config.token_name, process.env[config.token_name]);
+}
+
+CONFIG.models.forEach(verifyModelConfig);
 
 const sve = Bun.serve({
-  port: sysconfig.port ?? 10000,
+  port: CONFIG.port ?? 10000,
   async fetch(req) {
     const pathname = new URL(req.url).pathname;
     const content = await req.json();
 
     const requiredModel = content.model;
-    const config = sysconfig.models.find((model) => model.name === requiredModel);
+    const config = CONFIG.models.find((model) => model.name === requiredModel);
 
     const method = req.method;
     const baseUrl = config.base_url;
