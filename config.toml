@@ -1,12 +1,8 @@
 port = 10000
+token = 'sk-1234'
 
 [[models]]
 name = "Qwen/Qwen2.5-Coder-7B-Instruct"
-base_url = "https://api.siliconflow.cn/v1"
-token_name = "SILICONFLOW_API_TOKEN"
-
-[[models]]
-name = "Qwen/Qwen2.5-7B-Instruct"
 base_url = "https://api.siliconflow.cn/v1"
 token_name = "SILICONFLOW_API_TOKEN"
 
