@@ -12,6 +12,31 @@ base_url = "https://api.siliconflow.cn/v1"
 token_name = "SILICONFLOW_API_TOKEN"
 
 [[models]]
+name = "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
+base_url = "https://api.siliconflow.cn/v1"
+token_name = "SILICONFLOW_API_TOKEN"
+
+[[models]]
+name = "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
+base_url = "https://api.siliconflow.cn/v1"
+token_name = "SILICONFLOW_API_TOKEN"
+
+[[models]]
+name = "deepseek-ai/Janus-Pro-7B"
+base_url = "https://api.siliconflow.cn/v1"
+token_name = "SILICONFLOW_API_TOKEN"
+
+[[models]]
+name = "BAAI/bge-m3"
+base_url = "https://api.siliconflow.cn/v1"
+token_name = "SILICONFLOW_API_TOKEN"
+
+[[models]]
+name = "BAAI/bge-large-zh-v1.5"
+base_url = "https://api.siliconflow.cn/v1"
+token_name = "SILICONFLOW_API_TOKEN"
+
+[[models]]
 name = "deepseek-chat"
 base_url = "https://api.deepseek.com/v1"
 token_name = "DEEPSEEK_API_TOKEN"
