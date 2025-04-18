@@ -63,14 +63,14 @@ async function forward(req) {
   const pathname = new URL(req.url).pathname;
 
   logger.debug(`[${method}] ${pathname} ${req.headers.get('content-type')}`);
-  console.log('headers', req.headers.get('content-type'));
+  // console.log('headers', req.headers);
 
   if (pathname === '/') {
     return serverStatus();
   }
 
-  const reqContentTypeHeader = req.headers.get('content-type');
-  const reqAcceptHeader = req.headers.get('accept');
+  const reqContentTypeHeader = req.headers.get('content-type') ?? '';
+  const reqAcceptHeader = req.headers.get('accept') ?? '';
   const reqHeaders = JSON.parse(JSON.stringify(req.headers));
 
   let baseUrl = CONFIG.default_base_url;
