@@ -1,28 +1,34 @@
 port = 10000
 token = 'sk-1234'
+default_base_url = "https://api.siliconflow.cn/v1"
+default_token_name = "SILICONFLOW_API_TOKEN"
+
+[[models]]
+name = "THUDM/GLM-4-9B-0414"
+base_url = "https://api.siliconflow.cn/v1"
+token_name = "SILICONFLOW_API_TOKEN"
+context = 32000
+
+[[models]]
+name = "THUDM/GLM-Z1-9B-0414"
+base_url = "https://api.siliconflow.cn/v1"
+token_name = "SILICONFLOW_API_TOKEN"
+context = 32000
 
 [[models]]
 name = "Qwen/Qwen2.5-Coder-7B-Instruct"
 base_url = "https://api.siliconflow.cn/v1"
 token_name = "SILICONFLOW_API_TOKEN"
+context = 32000
 
 [[models]]
 name = "Qwen/Qwen2.5-7B-Instruct"
 base_url = "https://api.siliconflow.cn/v1"
 token_name = "SILICONFLOW_API_TOKEN"
+context = 32000
 
 [[models]]
 name = "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
-base_url = "https://api.siliconflow.cn/v1"
-token_name = "SILICONFLOW_API_TOKEN"
-
-[[models]]
-name = "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
-base_url = "https://api.siliconflow.cn/v1"
-token_name = "SILICONFLOW_API_TOKEN"
-
-[[models]]
-name = "deepseek-ai/Janus-Pro-7B"
 base_url = "https://api.siliconflow.cn/v1"
 token_name = "SILICONFLOW_API_TOKEN"
 
@@ -36,12 +42,16 @@ name = "BAAI/bge-large-zh-v1.5"
 base_url = "https://api.siliconflow.cn/v1"
 token_name = "SILICONFLOW_API_TOKEN"
 
+
+# deepseek 官方
+[[models]]
+name = "deepseek-reasoner"
+base_url = "https://api.deepseek.com/v1"
+token_name = "DEEPSEEK_API_TOKEN"
+context = 64000
+
 [[models]]
 name = "deepseek-chat"
 base_url = "https://api.deepseek.com/v1"
 token_name = "DEEPSEEK_API_TOKEN"
-
-[[models]]
-name = "deepseek-coder"
-base_url = "https://api.deepseek.com/v1"
-token_name = "DEEPSEEK_API_TOKEN"
+context = 64000

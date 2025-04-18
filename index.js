@@ -1,7 +1,13 @@
 import pino from 'pino';
 import CONFIG from './config.toml';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
-const logger = pino({ level: 'debug' }, pino.destination('./log.jsonl'));
+const PORT = CONFIG.port ?? 10000;
+const HOST = CONFIG.host ?? '127.0.0.1';
+const RUN_DIR = path.resolve(process.cwd(), '.run');
+
+const logger = pino({ level: 'debug' }, pino.destination(path.resolve(process.cwd(), './log.jsonl')));
 
 function mask(str) {
   return str.slice(0, 4).split('').filter(Boolean).join('') + '****' + str.slice(-4).split('').filter(Boolean).join('');
@@ -20,8 +26,8 @@ function verifyModelConfig(config) {
     throw new Error('Model API token name is missing');
   }
 
-  logger.debug(config, 'Config item')
-  logger.debug(mask(process.env[config.token_name]), 'Config key')
+  logger.debug(config, 'Config item');
+  logger.debug(mask(process.env[config.token_name]), 'Config key');
 }
 
 CONFIG.models.forEach(verifyModelConfig);
@@ -47,47 +53,89 @@ function serverStatus() {
   return new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } });
 }
 
+/**
+ * @param {Request} req
+ */
 async function forward(req) {
+  const reqId = Bun.randomUUIDv7();
+
   const method = req.method;
   const pathname = new URL(req.url).pathname;
-  logger.debug(`[${method}] ${pathname}`);
+
+  logger.debug(`[${method}] ${pathname} ${req.headers.get('content-type')}`);
+  console.log('headers', req.headers.get('content-type'));
 
   if (pathname === '/') {
     return serverStatus();
   }
 
-  const content = await req.json();
-  const requiredModel = content.model;
-  const config = CONFIG.models.find((model) => model.name === requiredModel);
+  const reqContentTypeHeader = req.headers.get('content-type');
+  const reqAcceptHeader = req.headers.get('accept');
+  const reqHeaders = JSON.parse(JSON.stringify(req.headers));
 
-  const baseUrl = config.base_url;
-  const apiToken = process.env[config.token_name];
+  let baseUrl = CONFIG.default_base_url;
+  let apiToken = process.env[CONFIG.default_token_name];
 
-  logger.info(`forward to ${baseUrl}${pathname} for ${requiredModel}`);
-  logger.info(content, 'request');
+  delete reqHeaders['host'];
+  delete reqHeaders['authorization'];
+  delete reqHeaders['Authorization'];
+  reqHeaders['authorization'] = `Bearer ${apiToken}`;
 
-  const res = await fetch(`${baseUrl}${pathname}`, {
+  if (reqContentTypeHeader.includes('json') || reqContentTypeHeader.includes('plain')) {
+    const rawReqBody = await req.text();
+
+    // 记录请求
+    const logMessage = `${method} ${req.url}\n${JSON.stringify(reqHeaders, null, 4)}\n\n${rawReqBody}`;
+    await fs.writeFile(path.resolve(RUN_DIR, `${reqId}-req.txt`), logMessage, 'utf-8');
+
+    if (reqContentTypeHeader.includes('json')) {
+      const content = JSON.parse(rawReqBody);
+
+      const requiredModel = content.model;
+      const config = CONFIG.models.find((model) => model.name === requiredModel);
+
+      baseUrl = config.base_url;
+      apiToken = process.env[config.token_name];
+
+      logger.info(`forward to ${baseUrl}${pathname} for ${requiredModel}`);
+    }
+
+    reqHeaders['authorization'] = `Bearer ${apiToken}`;
+
+    const remoteResponse = await fetch(`${baseUrl}${pathname}`, {
+      method,
+      body: method === 'GET' ? null : rawReqBody,
+      headers: reqHeaders,
+    });
+
+    return remoteResponse;
+  }
+
+  logger.info('直接转发');
+  return fetch(`${baseUrl}${pathname}`, {
     method,
-    body: method === 'GET' ? null : JSON.stringify(content),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiToken}`,
-    },
+    body: method === 'GET' ? null : await req.bytes(),
+    headers: reqHeaders,
   });
-
-  return res;
 }
 
 const sve = Bun.serve({
-  port: CONFIG.port ?? 10000,
+  hostname: HOST,
+  port: PORT,
   routes: {
     '/v1/models': () => modelList(),
     '/favicon.ico': () => new Response(null, { status: 404 }),
   },
   fetch(req) {
-    return forward(req)
-  }
+    return forward(req);
+  },
 });
 
+if (!(await fs.exists(RUN_DIR))) {
+  await fs.mkdir('.run');
+}
+
+await fs.writeFile(path.resolve(RUN_DIR, 'url.txt'), `http://${sve.hostname}:${sve.port}`, 'utf-8');
+
 logger.info(`CWD: ${process.cwd()}`);
-console.log(`OpenAI API Forward Server running at http://localhost:${sve.port}`);
+console.log(`OpenAI API Forward Server running at http://${sve.hostname}:${sve.port}`);
