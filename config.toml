@@ -4,6 +4,12 @@ default_base_url = "https://api.siliconflow.cn/v1"
 default_token_name = "SILICONFLOW_API_TOKEN"
 
 [[models]]
+name = "Qwen/Qwen3-8B"
+base_url = "https://api.siliconflow.cn/v1"
+token_name = "SILICONFLOW_API_TOKEN"
+context = 128000
+
+[[models]]
 name = "THUDM/GLM-4-9B-0414"
 base_url = "https://api.siliconflow.cn/v1"
 token_name = "SILICONFLOW_API_TOKEN"
