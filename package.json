@@ -2,6 +2,9 @@
   "name": "openai-api-forward",
   "module": "index.js",
   "type": "module",
+  "scripts": {
+    "build": "bun build.js"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
