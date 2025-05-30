@@ -61,3 +61,31 @@ name = "deepseek-chat"
 base_url = "https://api.deepseek.com"
 token_name = "DEEPSEEK_API_TOKEN"
 context = 64000
+
+[[models]]
+name = "Qwen3-235B-A22B"
+base_url = "https://api.nuuuu.de"
+token_name = "NUUUU_API_TOKEN"
+
+
+[[models]]
+name = "DeepSeek-V3-Fast"
+base_url = "https://api.nuuuu.de"
+token_name = "NUUUU_API_TOKEN"
+
+
+[[models]]
+name = "DeepSeek-V3"
+base_url = "https://api.nuuuu.de"
+token_name = "NUUUU_API_TOKEN"
+
+
+[[models]]
+name = "DeepSeek-R1"
+base_url = "https://api.nuuuu.de"
+token_name = "NUUUU_API_TOKEN"
+
+[[models]]
+name = "Qwen2.5-32B-Instruct"
+base_url = "https://api.nuuuu.de"
+token_name = "NUUUU_API_TOKEN"
