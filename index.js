@@ -1,13 +1,18 @@
 import pino from 'pino';
-import CONFIG from './config.toml';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+
+const logger = pino({ level: 'debug' }, pino.destination(path.resolve(process.cwd(), './log.jsonl')));
+
+const configFilePath = path.resolve(process.cwd(), 'config.toml');
+console.log('Using config file:', configFilePath);
+
+const configFile = await fs.readFile(configFilePath, 'utf-8');
+const CONFIG = Bun.TOML.parse(configFile);
 
 const PORT = CONFIG.port ?? 10000;
 const HOST = CONFIG.host ?? '127.0.0.1';
 const RUN_DIR = path.resolve(process.cwd(), '.run');
-
-const logger = pino({ level: 'debug' }, pino.destination(path.resolve(process.cwd(), './log.jsonl')));
 
 function mask(str) {
   return str.slice(0, 4).split('').filter(Boolean).join('') + '****' + str.slice(-4).split('').filter(Boolean).join('');

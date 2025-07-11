@@ -7,7 +7,7 @@ console.log('Build');
 await $`bun build --target=bun --outfile=dist/index.js index.js`;
 
 console.log('Install');
-const files = ['openai-api-forward.ps1'];
+const files = ['openai-api-forward.ps1', 'config.toml'];
 for (const file of files) {
   await $`cp ${file} dist`;
 }
